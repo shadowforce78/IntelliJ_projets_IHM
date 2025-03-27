@@ -13,7 +13,7 @@ public class PremiereApplication extends Application {
 
         VBoxRoot root = new VBoxRoot();
 
-        Scene scene = new Scene(root, 400, 300);
+        Scene scene = new Scene(root, 800, 600);
         scene.getStylesheets().add(css.toURI().toString());
 
         stage.setScene(scene);
