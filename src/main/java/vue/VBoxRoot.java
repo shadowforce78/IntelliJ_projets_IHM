@@ -3,6 +3,7 @@ package vue;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import modele.DateCalendrier;
+import modele.CalendrierDuMois;
 
 public class VBoxRoot extends VBox {
 
@@ -18,16 +19,25 @@ public class VBoxRoot extends VBox {
         labelHelloBis.getStyleClass().add("label-secondary");
         getChildren().add(labelHelloBis);
 
-        // Ajout des étiquettes pour les dates
-        DateCalendrier today = new DateCalendrier(); // Date d'aujourd'hui
-        DateCalendrier tomorrow = today.dateDuLendemain(); // Date de demain
+        // Création du calendrier du mois
+        CalendrierDuMois calendrier = new CalendrierDuMois(10, 2023); // Exemple : Octobre 2023
 
-        Label labelToday = new Label("Date d'aujourd'hui: " + today.toString());
-        labelToday.getStyleClass().add("label-date");
-        getChildren().add(labelToday);
+        // Étiquette pour le mois et l'année
+        Label labelMoisAnnee = new Label("Calendrier: " + calendrier.getMois() + " " + calendrier.getAnnee());
+        labelMoisAnnee.getStyleClass().add("label-primary");
+        getChildren().add(labelMoisAnnee);
 
-        Label labelTomorrow = new Label("Date de demain: " + tomorrow.toString());
-        labelTomorrow.getStyleClass().add("label-date");
-        getChildren().add(labelTomorrow);
+        // Création d'une VBox pour contenir les dates
+        VBox datesContainer = new VBox(5); // Espacement de 5 entre les dates
+        datesContainer.getStyleClass().add("dates-container");
+
+        // Ajout d'une étiquette pour chaque date du calendrier
+        for (DateCalendrier date : calendrier.getDates()) {
+            Label labelDate = new Label(date.toString());
+            labelDate.getStyleClass().add("label-date");
+            datesContainer.getChildren().add(labelDate);
+        }
+
+        getChildren().add(datesContainer);
     }
 }
