@@ -5,6 +5,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import modele.DateCalendrier;
 import modele.CalendrierDuMois;
+import java.time.LocalDate;
 
 public class VBoxRoot extends VBox {
 
@@ -21,7 +22,13 @@ public class VBoxRoot extends VBox {
         getChildren().add(labelHelloBis);
 
         // Création du calendrier du mois
-        CalendrierDuMois calendrier = new CalendrierDuMois(10, 2023); // Exemple : Octobre 2023
+        CalendrierDuMois calendrier = new CalendrierDuMois(3, 2025); // Exemple : Mars 2025
+
+        // Obtenir la date d'aujourd'hui
+        LocalDate aujourdhui = LocalDate.now();
+        int jourAujourdhui = aujourdhui.getDayOfMonth();
+        int moisAujourdhui = aujourdhui.getMonthValue();
+        int anneeAujourdhui = aujourdhui.getYear();
 
         // Étiquette pour le mois et l'année
         Label labelMoisAnnee = new Label("Calendrier: " + calendrier.getMois() + " " + calendrier.getAnnee());
@@ -36,6 +43,14 @@ public class VBoxRoot extends VBox {
         for (DateCalendrier date : calendrier.getDates()) {
             Label labelDate = new Label(date.toString());
             labelDate.getStyleClass().add("label-date");
+
+            // Vérifier si cette date est aujourd'hui
+            if (date.getJour() == jourAujourdhui &&
+                    date.getMois() == moisAujourdhui &&
+                    date.getAnnee() == anneeAujourdhui) {
+                labelDate.getStyleClass().add("today");
+            }
+
             datesContainer.getChildren().add(labelDate);
         }
 
