@@ -1,49 +1,104 @@
+/* Modern Fluent Design CSS */
+
+/* Global styles */
+.root {
+    -fx-font-family: 'Segoe UI', system-ui, sans-serif;
+    -fx-background-color: #f8f9fa;
+}
+
+/* Main container */
 .root-container {
-    -fx-background-color: #f0f0f0;
-    -fx-padding: 20px;
+    -fx-background-color: rgba(255, 255, 255, 0.85);
+    -fx-background-radius: 12px;
+    -fx-padding: 24px;
+    -fx-spacing: 16px;
     -fx-alignment: center;
-    -fx-border-color: #cccccc;
-    -fx-border-width: 2px;
-    -fx-border-radius: 5px;
-}
-
-.label-primary {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
-}
-
-.label-secondary {
-    -fx-font-size: 16px;
-    -fx-font-style: italic;
-    -fx-text-fill: #3498db;
-}
-
-/* Style appliqué à tous les labels */
-.label {
-    -fx-padding: 5px;
-    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 2, 0, 0, 1);
-}
-
-/* Style pour le ScrollPane du calendrier */
-.calendar-scroll {
-    -fx-background-color: transparent;
-    -fx-border-color: #cccccc;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 10, 0, 0, 4);
+    -fx-border-color: rgba(200, 200, 200, 0.3);
     -fx-border-width: 1px;
-    -fx-border-radius: 3px;
+    -fx-border-radius: 12px;
 }
 
+/* Primary label styling */
+.label-primary {
+    -fx-font-size: 28px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #0078d7;
+    -fx-effect: dropshadow(gaussian, rgba(0, 120, 215, 0.2), 1, 0, 0, 1);
+}
+
+/* Secondary label styling */
+.label-secondary {
+    -fx-font-size: 18px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #505050;
+}
+
+/* Base label styling */
+.label {
+    -fx-padding: 6px 0;
+    -fx-opacity: 0.95;
+}
+
+/* ScrollPane styling */
+.calendar-scroll {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(200, 200, 200, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-padding: 2px;
+}
+
+.calendar-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.calendar-scroll > .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.calendar-scroll > .scroll-bar > .thumb {
+    -fx-background-color: rgba(0, 120, 215, 0.3);
+    -fx-background-radius: 10;
+}
+
+.calendar-scroll > .scroll-bar > .track {
+    -fx-background-color: transparent;
+}
+
+/* Dates container */
 .dates-container {
-    -fx-padding: 10px;
-    -fx-spacing: 5px;
+    -fx-padding: 12px;
+    -fx-spacing: 8px;
     -fx-alignment: center;
+    -fx-background-color: transparent;
 }
 
+/* Date labels */
 .label-date {
-    -fx-font-size: 14px;
-    -fx-text-fill: #2c3e50;
-    -fx-background-color: #ecf0f1;
-    -fx-padding: 5px 10px;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
+    -fx-background-color: rgba(240, 240, 240, 0.8);
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 15px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 1);
+    -fx-transition: -fx-background-color 0.15s ease-in-out;
+}
+
+.label-date:hover {
+    -fx-background-color: rgba(0, 120, 215, 0.1);
+    -fx-text-fill: #0078d7;
+    -fx-cursor: hand;
+}
+
+/* Today's date special styling */
+.label-date.today {
+    -fx-background-color: rgba(0, 120, 215, 0.2);
+    -fx-font-weight: 700;
+    -fx-text-fill: #0078d7;
+    -fx-border-color: rgba(0, 120, 215, 0.4);
+    -fx-border-width: 1px;
 }
