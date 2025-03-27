@@ -1,6 +1,7 @@
 package vue;
 
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import modele.DateCalendrier;
 import modele.CalendrierDuMois;
@@ -38,6 +39,14 @@ public class VBoxRoot extends VBox {
             datesContainer.getChildren().add(labelDate);
         }
 
-        getChildren().add(datesContainer);
+        // Création d'un ScrollPane pour permettre le défilement
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(datesContainer);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(200); // Hauteur préférée
+        scrollPane.getStyleClass().add("calendar-scroll");
+
+        // Ajout du ScrollPane au lieu du conteneur de dates directement
+        getChildren().add(scrollPane);
     }
 }

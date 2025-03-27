@@ -24,3 +24,26 @@
     -fx-padding: 5px;
     -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 2, 0, 0, 1);
 }
+
+/* Style pour le ScrollPane du calendrier */
+.calendar-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+}
+
+.dates-container {
+    -fx-padding: 10px;
+    -fx-spacing: 5px;
+    -fx-alignment: center;
+}
+
+.label-date {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+    -fx-background-color: #ecf0f1;
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+}
