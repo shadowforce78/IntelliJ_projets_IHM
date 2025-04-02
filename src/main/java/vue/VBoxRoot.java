@@ -2,6 +2,7 @@ package vue;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import modele.DateCalendrier;
 import modele.CalendrierDuMois;
@@ -21,47 +22,62 @@ public class VBoxRoot extends VBox {
         labelHelloBis.getStyleClass().add("label-secondary");
         getChildren().add(labelHelloBis);
 
-        // Création du calendrier du mois
-        CalendrierDuMois calendrier = new CalendrierDuMois(3, 2025); // Exemple : Mars 2025
-
-        // Obtenir la date d'aujourd'hui
+        // Obtenir la date d'aujourd'hui et l'année courante
         LocalDate aujourdhui = LocalDate.now();
         int jourAujourdhui = aujourdhui.getDayOfMonth();
         int moisAujourdhui = aujourdhui.getMonthValue();
-        int anneeAujourdhui = aujourdhui.getYear();
+        int anneeCourante = aujourdhui.getYear();
 
-        // Étiquette pour le mois et l'année
-        Label labelMoisAnnee = new Label("Calendrier: " + calendrier.getMois() + " " + calendrier.getAnnee());
-        labelMoisAnnee.getStyleClass().add("label-primary");
-        getChildren().add(labelMoisAnnee);
+        // Création d'un StackPane pour empiler les 12 mois
+        StackPane stackPaneMois = new StackPane();
+        stackPaneMois.getStyleClass().add("stack-pane-mois");
+        stackPaneMois.setPrefHeight(200); // Hauteur préférée
 
-        // Création d'une VBox pour contenir les dates
-        VBox datesContainer = new VBox(5); // Espacement de 5 entre les dates
-        datesContainer.getStyleClass().add("dates-container");
+        // Créer 12 ScrollPane pour les 12 mois de l'année
+        for (int mois = 1; mois <= 12; mois++) {
+            // Création du calendrier pour ce mois
+            CalendrierDuMois calendrier = new CalendrierDuMois(mois, anneeCourante);
 
-        // Ajout d'une étiquette pour chaque date du calendrier
-        for (DateCalendrier date : calendrier.getDates()) {
-            Label labelDate = new Label(date.toString());
-            labelDate.getStyleClass().add("label-date");
+            // Création d'une VBox pour contenir les dates du mois
+            VBox datesContainer = new VBox(5);
+            datesContainer.getStyleClass().add("dates-container");
 
-            // Vérifier si cette date est aujourd'hui
-            if (date.getJour() == jourAujourdhui &&
-                    date.getMois() == moisAujourdhui &&
-                    date.getAnnee() == anneeAujourdhui) {
-                labelDate.getStyleClass().add("today");
+            // Ajouter un en-tête pour le mois
+            Label labelMoisAnnee = new Label(calendrier.getMois() + " " + calendrier.getAnnee());
+            labelMoisAnnee.getStyleClass().add("label-mois");
+            datesContainer.getChildren().add(labelMoisAnnee);
+
+            // Ajout des dates pour ce mois
+            for (DateCalendrier date : calendrier.getDates()) {
+                Label labelDate = new Label(date.toString());
+                labelDate.getStyleClass().add("label-date");
+
+                // Vérifier si cette date est aujourd'hui
+                if (date.getJour() == jourAujourdhui &&
+                        date.getMois() == moisAujourdhui &&
+                        date.getAnnee() == anneeCourante) {
+                    labelDate.getStyleClass().add("today");
+                }
+
+                datesContainer.getChildren().add(labelDate);
             }
 
-            datesContainer.getChildren().add(labelDate);
+            // Créer un ScrollPane pour ce mois
+            ScrollPane scrollPane = new ScrollPane();
+            scrollPane.setContent(datesContainer);
+            scrollPane.setFitToWidth(true);
+            scrollPane.getStyleClass().add("calendar-scroll");
+
+            // Ajouter le ScrollPane au StackPane (de janvier à décembre)
+            stackPaneMois.getChildren().add(scrollPane);
         }
 
-        // Création d'un ScrollPane pour permettre le défilement
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(datesContainer);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setPrefHeight(200); // Hauteur préférée
-        scrollPane.getStyleClass().add("calendar-scroll");
+        // Ajouter une étiquette pour l'année
+        Label labelAnnee = new Label("Calendrier " + anneeCourante);
+        labelAnnee.getStyleClass().add("label-primary");
+        getChildren().add(labelAnnee);
 
-        // Ajout du ScrollPane au lieu du conteneur de dates directement
-        getChildren().add(scrollPane);
+        // Ajouter le StackPane au VBox principal
+        getChildren().add(stackPaneMois);
     }
 }
