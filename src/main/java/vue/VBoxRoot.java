@@ -28,6 +28,7 @@ public class VBoxRoot extends VBox {
         int moisAujourdhui = aujourdhui.getMonthValue();
         int anneeCourante = aujourdhui.getYear();
 
+
         // Création d'un StackPane pour empiler les 12 mois
         StackPane stackPaneMois = new StackPane();
         stackPaneMois.getStyleClass().add("stack-pane-mois");
@@ -68,8 +69,25 @@ public class VBoxRoot extends VBox {
             scrollPane.setFitToWidth(true);
             scrollPane.getStyleClass().add("calendar-scroll");
 
-            // Ajouter le ScrollPane au StackPane (de janvier à décembre)
+            // Associer le nom du mois au ScrollPane pour le retrouver plus tard
+            scrollPane.setAccessibleText(String.valueOf(calendrier.getMois()));
+
+            // Ajouter le ScrollPane au StackPane
             stackPaneMois.getChildren().add(scrollPane);
+        }
+
+        // Placer le mois courant au premier plan
+        String moisCourantNom = String.valueOf(moisAujourdhui);
+
+        // Parcourir tous les ScrollPane et amener le mois courant au premier plan
+        for (javafx.scene.Node node : stackPaneMois.getChildren()) {
+            if (node instanceof ScrollPane) {
+                ScrollPane scrollPane = (ScrollPane) node;
+                if (scrollPane.getAccessibleText().equals(moisCourantNom)) {
+                    scrollPane.toFront();
+                    break;
+                }
+            }
         }
 
         // Ajouter une étiquette pour l'année
