@@ -42,8 +42,8 @@
 
 /* ScrollPane styling */
 .calendar-scroll {
-    -fx-background: transparent;
-    -fx-background-color: transparent;
+    -fx-background: white;
+    -fx-background-color: white;
     -fx-border-color: rgba(200, 200, 200, 0.3);
     -fx-border-width: 1px;
     -fx-border-radius: 8px;
@@ -51,7 +51,7 @@
 }
 
 .calendar-scroll > .viewport {
-    -fx-background-color: transparent;
+    -fx-background-color: white;
 }
 
 .calendar-scroll > .scroll-bar {
@@ -69,21 +69,34 @@
 
 /* Dates container */
 .dates-container {
-    -fx-padding: 12px;
-    -fx-spacing: 8px;
+    -fx-background-color: white;
+    -fx-padding: 10px;
     -fx-alignment: center;
-    -fx-background-color: transparent;
+    -fx-hgap: 5;
+    -fx-vgap: 5;
+    -fx-pref-columns: 7;
+    -fx-min-width: 329px;  /* Adjusted to fit 7 columns: (42px * 7) + (5px * 6) + 20px padding */
+    -fx-max-width: 329px;
+    -fx-pref-tile-width: 42;
+    -fx-pref-tile-height: 42;
 }
 
 /* Date labels */
 .label-date {
     -fx-background-color: rgba(240, 240, 240, 0.8);
-    -fx-background-radius: 6px;
-    -fx-border-radius: 6px;
-    -fx-padding: 8px 12px;
-    -fx-font-size: 15px;
+    -fx-background-radius: 21px;
+    -fx-padding: 0;
+    -fx-font-size: 16px;
     -fx-font-weight: 400;
     -fx-text-fill: #333333;
+    -fx-alignment: center;
+    -fx-content-display: center;
+    -fx-pref-width: 42px;
+    -fx-pref-height: 42px;
+    -fx-min-width: 42px;
+    -fx-min-height: 42px;
+    -fx-max-width: 42px;
+    -fx-max-height: 42px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 4, 0, 0, 1);
     -fx-transition: -fx-background-color 0.15s ease-in-out;
 }
@@ -105,7 +118,7 @@
 
 /* StackPane styling for months */
 .stack-pane-mois {
-    -fx-background-color: transparent;
+    -fx-background-color: white;
     -fx-border-color: rgba(200, 200, 200, 0.3);
     -fx-border-width: 1px;
     -fx-border-radius: 8px;
@@ -117,7 +130,59 @@
     -fx-font-weight: 600;
     -fx-text-fill: #0078d7;
     -fx-padding: 8px 0 12px 0;
-    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-background-color: white;
     -fx-alignment: center;
     -fx-max-width: infinity;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 2);
+}
+
+/* Month container */
+.month-container {
+    -fx-background-color: white;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
+
+/* New styles for month label and navigation button */
+.month-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0078d7;
+    -fx-padding: 10px;
+}
+
+.nav-button {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-background-radius: 20px;
+    -fx-padding: 5px 10px;
+}
+
+.nav-button:hover {
+    -fx-background-color: #0056b3;
+    -fx-cursor: hand;
+}
+
+/* Style pour les en-têtes des jours de la semaine */
+.label-jour-semaine {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0078d7;
+    -fx-alignment: center;
+    -fx-content-display: center;
+    -fx-pref-width: 42px;
+    -fx-min-width: 42px;
+    -fx-max-width: 42px;
+    -fx-pref-height: 30px;
+    -fx-min-height: 30px;
+    -fx-padding: 5px;
+}
+
+/* Style pour les cases vides */
+.label-vide {
+    -fx-background-color: transparent;
+    -fx-opacity: 0.3;
 }
