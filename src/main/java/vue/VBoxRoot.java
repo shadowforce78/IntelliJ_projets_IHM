@@ -12,7 +12,6 @@ public class VBoxRoot extends VBox {
     private int currentMonthIndex;
     private Label monthLabel;
     private StackPane stackPaneMois;
-    private int selectedDay = -1; // Add this field
 
     public VBoxRoot() {
         super(10); // Espacement de 10 entre les éléments
@@ -40,34 +39,35 @@ public class VBoxRoot extends VBox {
         // Création du conteneur principal
         BorderPane mainContainer = new BorderPane();
 
-        // Création du conteneur pour le mois et le bouton
+        // Création du conteneur pour le mois et les boutons
         HBox bottomContainer = new HBox(10);
         bottomContainer.setAlignment(Pos.BOTTOM_RIGHT);
 
-        // Label pour le mois (en bas à droite)
+        // Label pour le mois
         monthLabel = new Label("");
         monthLabel.getStyleClass().add("month-label");
+
+        // Bouton pour janvier
+        Button firstMonthBtn = new Button("⟪");
+        firstMonthBtn.getStyleClass().add("nav-button");
+        firstMonthBtn.setOnAction(e -> showFirstMonth());
 
         // Bouton pour le mois précédent
         Button prevMonthBtn = new Button("←");
         prevMonthBtn.getStyleClass().add("nav-button");
         prevMonthBtn.setOnAction(e -> showPrevMonth());
 
-        // Add day navigation buttons
-        Button prevDayBtn = new Button("◄");
-        prevDayBtn.getStyleClass().add("nav-button");
-        prevDayBtn.setOnAction(e -> selectPreviousDay());
-
-        Button nextDayBtn = new Button("►");
-        nextDayBtn.getStyleClass().add("nav-button");
-        nextDayBtn.setOnAction(e -> selectNextDay());
-
-        // Bouton de navigation pour le mois suivant
+        // Bouton pour le mois suivant
         Button nextMonthBtn = new Button("→");
         nextMonthBtn.getStyleClass().add("nav-button");
         nextMonthBtn.setOnAction(e -> showNextMonth());
 
-        bottomContainer.getChildren().addAll(prevMonthBtn, prevDayBtn, monthLabel, nextDayBtn, nextMonthBtn);
+        // Bouton pour décembre
+        Button lastMonthBtn = new Button("⟫");
+        lastMonthBtn.getStyleClass().add("nav-button");
+        lastMonthBtn.setOnAction(e -> showLastMonth());
+
+        bottomContainer.getChildren().addAll(firstMonthBtn, prevMonthBtn, monthLabel, nextMonthBtn, lastMonthBtn);
 
         // Placement des éléments
         mainContainer.setCenter(stackPaneMois);
@@ -103,7 +103,7 @@ public class VBoxRoot extends VBox {
             // Obtenir le jour de la semaine du premier jour du mois
             DateCalendrier premierJour = null;
             for (DateCalendrier date : calendrier.getDates()) {
-                if (date.getJour() == 1) {
+                if (date.getJour() == 0) {
                     premierJour = date;
                     break;
                 }
@@ -119,10 +119,6 @@ public class VBoxRoot extends VBox {
                 Label labelDate = new Label(String.valueOf(date.getJour()));
                 labelDate.getStyleClass().add("label-date");
                 final int dayNumber = date.getJour();
-
-                if (dayNumber == selectedDay && date.getMois() == currentMonthIndex) {
-                    labelDate.getStyleClass().add("selected");
-                }
 
                 if (date.getJour() == jourAujourdhui &&
                         date.getMois() == moisAujourdhui &&
@@ -186,57 +182,16 @@ public class VBoxRoot extends VBox {
         }
     }
 
-    private void selectNextDay() {
-        if (selectedDay == -1) {
-            selectedDay = 1;
-        } else {
-            selectedDay = Math.min(selectedDay + 1, 31); // Simple maximum day check
-        }
-        updateCalendarDisplay();
+    private void showFirstMonth() {
+        currentMonthIndex = 1;
+        updateMonthDisplay();
+        showCurrentMonth();
     }
 
-    private void selectPreviousDay() {
-        if (selectedDay == -1) {
-            selectedDay = 1;
-        } else {
-            selectedDay = Math.max(selectedDay - 1, 1);
-        }
-        updateCalendarDisplay();
-    }
-
-    private void updateCalendarDisplay() {
-        for (javafx.scene.Node node : stackPaneMois.getChildren()) {
-            if (node instanceof VBox) {
-                VBox monthContainer = (VBox) node;
-                int monthNumber = Integer.parseInt(monthContainer.getAccessibleText());
-                GridPane grid = (GridPane) ((VBox) monthContainer).getChildren().get(1);
-
-                // Retirer toutes les sélections précédentes
-                for (javafx.scene.Node dateNode : grid.getChildren()) {
-                    if (dateNode instanceof Label) {
-                        dateNode.getStyleClass().remove("selected");
-                    }
-                }
-
-                // Ajouter la sélection uniquement dans le mois actuel
-                if (monthNumber == currentMonthIndex) {
-                    for (javafx.scene.Node dateNode : grid.getChildren()) {
-                        if (dateNode instanceof Label) {
-                            Label dateLabel = (Label) dateNode;
-                            try {
-                                int day = Integer.parseInt(dateLabel.getText());
-                                if (day == selectedDay) {
-                                    dateLabel.getStyleClass().add("selected");
-                                    break; // On sort dès qu'on a trouvé le jour
-                                }
-                            } catch (NumberFormatException e) {
-                                // Ignorer les labels qui ne sont pas des nombres
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    private void showLastMonth() {
+        currentMonthIndex = 12;
+        updateMonthDisplay();
+        showCurrentMonth();
     }
 
     public static void main(String[] args) {
