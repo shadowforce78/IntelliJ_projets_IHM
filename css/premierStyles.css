@@ -75,10 +75,12 @@
     -fx-hgap: 5;
     -fx-vgap: 5;
     -fx-pref-columns: 7;
-    -fx-min-width: 329px;  /* Adjusted to fit 7 columns: (42px * 7) + (5px * 6) + 20px padding */
-    -fx-max-width: 329px;
+    -fx-min-width: 334px;  /* (42px * 7) + (5px * 6) + 20px padding */
+    -fx-max-width: 334px;
     -fx-pref-tile-width: 42;
     -fx-pref-tile-height: 42;
+    -fx-tile-alignment: center;
+    -fx-grid-lines-visible: false;
 }
 
 /* Date labels */
@@ -116,6 +118,15 @@
     -fx-border-width: 1px;
 }
 
+/* Selected date styling */
+.label-date.selected {
+    -fx-background-color: rgba(255, 140, 0, 0.2);
+    -fx-font-weight: 700;
+    -fx-text-fill: #ff8c00;
+    -fx-border-color: rgba(255, 140, 0, 0.4);
+    -fx-border-width: 1px;
+}
+
 /* StackPane styling for months */
 .stack-pane-mois {
     -fx-background-color: white;
@@ -141,6 +152,8 @@
     -fx-background-color: white;
     -fx-padding: 10px;
     -fx-alignment: center;
+    -fx-min-width: 334px;
+    -fx-max-width: 334px;
 }
 
 /* New styles for month label and navigation button */
@@ -185,4 +198,10 @@
 .label-vide {
     -fx-background-color: transparent;
     -fx-opacity: 0.3;
+}
+
+.week-days-header {
+    -fx-padding: 5px;
+    -fx-alignment: center;
+    -fx-spacing: 5;
 }

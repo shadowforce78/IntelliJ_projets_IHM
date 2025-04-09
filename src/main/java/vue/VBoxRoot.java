@@ -12,6 +12,7 @@ public class VBoxRoot extends VBox {
     private int currentMonthIndex;
     private Label monthLabel;
     private StackPane stackPaneMois;
+    private int selectedDay = -1; // Add this field
 
     public VBoxRoot() {
         super(10); // Espacement de 10 entre les éléments
@@ -52,12 +53,21 @@ public class VBoxRoot extends VBox {
         prevMonthBtn.getStyleClass().add("nav-button");
         prevMonthBtn.setOnAction(e -> showPrevMonth());
 
+        // Add day navigation buttons
+        Button prevDayBtn = new Button("◄");
+        prevDayBtn.getStyleClass().add("nav-button");
+        prevDayBtn.setOnAction(e -> selectPreviousDay());
+
+        Button nextDayBtn = new Button("►");
+        nextDayBtn.getStyleClass().add("nav-button");
+        nextDayBtn.setOnAction(e -> selectNextDay());
+
         // Bouton de navigation pour le mois suivant
         Button nextMonthBtn = new Button("→");
         nextMonthBtn.getStyleClass().add("nav-button");
         nextMonthBtn.setOnAction(e -> showNextMonth());
 
-        bottomContainer.getChildren().addAll(prevMonthBtn, monthLabel, nextMonthBtn);
+        bottomContainer.getChildren().addAll(prevMonthBtn, prevDayBtn, monthLabel, nextDayBtn, nextMonthBtn);
 
         // Placement des éléments
         mainContainer.setCenter(stackPaneMois);
@@ -67,25 +77,30 @@ public class VBoxRoot extends VBox {
         for (int mois = 1; mois <= 12; mois++) {
             CalendrierDuMois calendrier = new CalendrierDuMois(mois, anneeCourante);
 
-            VBox monthContainer = new VBox(10);
+            VBox monthContainer = new VBox(5);
             monthContainer.getStyleClass().add("month-container");
 
-            TilePane tilePane = new TilePane();
-            tilePane.setPrefColumns(7);
-            tilePane.setHgap(5);
-            tilePane.setVgap(5);
-            tilePane.getStyleClass().add("dates-container");
+            // Create HBox for weekday headers
+            HBox weekDaysHeader = new HBox(5);
+            weekDaysHeader.getStyleClass().add("week-days-header");
 
             // Ajouter les en-têtes des jours de la semaine
             String[] joursAbrev = { "Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di" };
             for (String jour : joursAbrev) {
                 Label labelJour = new Label(jour);
                 labelJour.getStyleClass().add("label-jour-semaine");
-                tilePane.getChildren().add(labelJour);
+                weekDaysHeader.getChildren().add(labelJour);
             }
 
-            // Obtenir le jour de la semaine du premier jour du mois (1=Lundi, 7=Dimanche)
-            // Utiliser l'itérateur pour accéder au premier élément de la collection
+            monthContainer.getChildren().add(weekDaysHeader);
+
+            // Create GridPane for dates instead of TilePane
+            GridPane datesGrid = new GridPane();
+            datesGrid.getStyleClass().add("dates-container");
+            datesGrid.setHgap(5);
+            datesGrid.setVgap(5);
+
+            // Obtenir le jour de la semaine du premier jour du mois
             DateCalendrier premierJour = null;
             for (DateCalendrier date : calendrier.getDates()) {
                 if (date.getJour() == 1) {
@@ -94,29 +109,20 @@ public class VBoxRoot extends VBox {
                 }
             }
 
-            int jourSemainePremierJour = 1; // Par défaut lundi
-            if (premierJour != null) {
-                jourSemainePremierJour = premierJour.getJourSemaine();
-            }
+            int jourSemainePremierJour = (premierJour != null) ? premierJour.getJourSemaine() : 1;
+            int column = jourSemainePremierJour - 1;
+            if (column < 0)
+                column = 6;
+            int row = 0;
 
-            // Ajuster pour que notre index commence à 0 (0=Lundi, 6=Dimanche)
-            int debutIndex = jourSemainePremierJour - 1;
-            if (debutIndex < 0)
-                debutIndex = 6; // Si c'est dimanche (7), l'index devient 6
-
-            // Ajouter des espaces vides pour aligner le premier jour
-            for (int i = 0; i < debutIndex; i++) {
-                Label vide = new Label("");
-                vide.getStyleClass().add("label-date");
-                vide.getStyleClass().add("label-vide");
-                tilePane.getChildren().add(vide);
-            }
-
-            // Ajout des dates dans le TilePane
             for (DateCalendrier date : calendrier.getDates()) {
-                // Afficher uniquement le numéro du jour
                 Label labelDate = new Label(String.valueOf(date.getJour()));
                 labelDate.getStyleClass().add("label-date");
+                final int dayNumber = date.getJour();
+
+                if (dayNumber == selectedDay && date.getMois() == currentMonthIndex) {
+                    labelDate.getStyleClass().add("selected");
+                }
 
                 if (date.getJour() == jourAujourdhui &&
                         date.getMois() == moisAujourdhui &&
@@ -124,10 +130,15 @@ public class VBoxRoot extends VBox {
                     labelDate.getStyleClass().add("today");
                 }
 
-                tilePane.getChildren().add(labelDate);
+                datesGrid.add(labelDate, column, row);
+                column++;
+                if (column > 6) {
+                    column = 0;
+                    row++;
+                }
             }
 
-            monthContainer.getChildren().add(tilePane);
+            monthContainer.getChildren().add(datesGrid);
             stackPaneMois.getChildren().add(monthContainer);
             monthContainer.setAccessibleText(String.valueOf(mois));
         }
@@ -170,6 +181,59 @@ public class VBoxRoot extends VBox {
                 if (monthContainer.getAccessibleText().equals(monthToShow)) {
                     monthContainer.toFront();
                     break;
+                }
+            }
+        }
+    }
+
+    private void selectNextDay() {
+        if (selectedDay == -1) {
+            selectedDay = 1;
+        } else {
+            selectedDay = Math.min(selectedDay + 1, 31); // Simple maximum day check
+        }
+        updateCalendarDisplay();
+    }
+
+    private void selectPreviousDay() {
+        if (selectedDay == -1) {
+            selectedDay = 1;
+        } else {
+            selectedDay = Math.max(selectedDay - 1, 1);
+        }
+        updateCalendarDisplay();
+    }
+
+    private void updateCalendarDisplay() {
+        for (javafx.scene.Node node : stackPaneMois.getChildren()) {
+            if (node instanceof VBox) {
+                VBox monthContainer = (VBox) node;
+                int monthNumber = Integer.parseInt(monthContainer.getAccessibleText());
+                GridPane grid = (GridPane) ((VBox) monthContainer).getChildren().get(1);
+
+                // Retirer toutes les sélections précédentes
+                for (javafx.scene.Node dateNode : grid.getChildren()) {
+                    if (dateNode instanceof Label) {
+                        dateNode.getStyleClass().remove("selected");
+                    }
+                }
+
+                // Ajouter la sélection uniquement dans le mois actuel
+                if (monthNumber == currentMonthIndex) {
+                    for (javafx.scene.Node dateNode : grid.getChildren()) {
+                        if (dateNode instanceof Label) {
+                            Label dateLabel = (Label) dateNode;
+                            try {
+                                int day = Integer.parseInt(dateLabel.getText());
+                                if (day == selectedDay) {
+                                    dateLabel.getStyleClass().add("selected");
+                                    break; // On sort dès qu'on a trouvé le jour
+                                }
+                            } catch (NumberFormatException e) {
+                                // Ignorer les labels qui ne sont pas des nombres
+                            }
+                        }
+                    }
                 }
             }
         }
