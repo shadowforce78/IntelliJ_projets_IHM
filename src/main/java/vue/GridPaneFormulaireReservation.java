@@ -41,7 +41,7 @@ public class GridPaneFormulaireReservation extends GridPane {
      */
     public GridPaneFormulaireReservation() {
 
-        this.setGridLinesVisible(true);
+        this.setGridLinesVisible(false);
         // Configuration de base du GridPane
         setPadding(new Insets(20));
         setHgap(10);
