@@ -12,34 +12,26 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Classe représentant le formulaire de réservation
- * Permet de saisir les informations pour une nouvelle réservation
+ * Classe représentant le formulaire de réservation simplifié
+ * Permet de saisir le titre, la date et les horaires pour une nouvelle
+ * réservation
  */
 public class GridPaneFormulaireReservation extends GridPane {
 
     // Composants du formulaire
-    private Label titreLabel;
+    private Label titreFormulaireLabel;
+    private Label coursLabel; // Renommé pour clarté, représente le titre de la réservation
     private Label dateLabel;
-    private Label coursLabel;
     private Label horaireLabel;
-    private Label typeReservationLabel;
 
+    private TextField coursField; // Champ pour le titre de la réservation
     private DatePicker datePicker;
-    private TextField coursField;
 
     // ComboBox pour sélectionner les horaires
-    private ComboBox<Integer> heureDebutCombo;
-    private ComboBox<Integer> minuteDebutCombo;
-    private ComboBox<Integer> heureFinCombo;
-    private ComboBox<Integer> minuteFinCombo;
-
-    // Horaires en tant qu'objets du modèle
-    private Horaire horaireDebut;
-    private Horaire horaireFin;
-
-    private ToggleGroup typeReservationGroup;
-    private RadioButton presentielRadio;
-    private RadioButton distancielRadio;
+    private ComboBox<String> heureDebutCombo;
+    private ComboBox<String> minuteDebutCombo;
+    private ComboBox<String> heureFinCombo;
+    private ComboBox<String> minuteFinCombo;
 
     private Button annulerButton;
     private Button enregistrerButton;
@@ -48,16 +40,14 @@ public class GridPaneFormulaireReservation extends GridPane {
      * Constructeur de la classe GridPaneFormulaireReservation
      */
     public GridPaneFormulaireReservation() {
+
+        this.setGridLinesVisible(true);
         // Configuration de base du GridPane
         setPadding(new Insets(20));
         setHgap(10);
         setVgap(15);
         setAlignment(Pos.TOP_CENTER);
         getStyleClass().add("formulaire-container");
-
-        // Initialisation des objets Horaire par défaut (8h00 à 9h00)
-        horaireDebut = new Horaire(8, 0);
-        horaireFin = new Horaire(9, 0);
 
         // Initialisation des composants
         initialiserComposants();
@@ -77,65 +67,53 @@ public class GridPaneFormulaireReservation extends GridPane {
      */
     private void initialiserComposants() {
         // Initialisation des labels
-        titreLabel = new Label("Formulaire de réservation");
-        titreLabel.setFont(Font.font("System", FontWeight.BOLD, 16));
-        titreLabel.getStyleClass().add("titre-formulaire");
+        titreFormulaireLabel = new Label("Nouvelle Réservation");
+        titreFormulaireLabel.setFont(Font.font("System", FontWeight.BOLD, 16));
+        titreFormulaireLabel.getStyleClass().add("titre-formulaire");
+
+        coursLabel = new Label("_Titre :");
+        coursLabel.setMnemonicParsing(true);
 
         dateLabel = new Label("_Date :");
         dateLabel.setMnemonicParsing(true);
 
-        coursLabel = new Label("_Nom du cours :");
-        coursLabel.setMnemonicParsing(true);
-
         horaireLabel = new Label("_Horaire :");
         horaireLabel.setMnemonicParsing(true);
 
-        typeReservationLabel = new Label("T_ype de réservation :");
-        typeReservationLabel.setMnemonicParsing(true);
-
         // Initialisation des champs de saisie
+        coursField = new TextField();
+        coursField.setPromptText("Entrez le titre de la réservation");
+        coursField.setPrefWidth(200);
+
         datePicker = new DatePicker(LocalDate.now());
         datePicker.setPromptText("Sélectionnez une date");
         datePicker.setPrefWidth(200);
 
-        coursField = new TextField();
-        coursField.setPromptText("Entrez le nom du cours");
-        coursField.setPrefWidth(200);
-
-        // Initialisation des combos pour les horaires
+        // Initialisation des combos pour les horaires avec les valeurs par défaut
+        // (08h00 et 09h00)
         heureDebutCombo = new ComboBox<>();
         for (int i = 8; i <= 20; i++) {
-            heureDebutCombo.getItems().add(i);
+            heureDebutCombo.getItems().add(String.format("%02d", i));
         }
-        heureDebutCombo.setValue(horaireDebut.getHeure());
+        heureDebutCombo.setValue("08"); // Valeur par défaut
         heureDebutCombo.setPrefWidth(70);
 
         minuteDebutCombo = new ComboBox<>();
-        minuteDebutCombo.getItems().addAll(0, 15, 30, 45);
-        minuteDebutCombo.setValue(horaireDebut.getMinutes());
+        minuteDebutCombo.getItems().addAll("00", "15", "30", "45");
+        minuteDebutCombo.setValue("00"); // Valeur par défaut
         minuteDebutCombo.setPrefWidth(70);
 
         heureFinCombo = new ComboBox<>();
         for (int i = 8; i <= 20; i++) {
-            heureFinCombo.getItems().add(i);
+            heureFinCombo.getItems().add(String.format("%02d", i));
         }
-        heureFinCombo.setValue(horaireFin.getHeure());
+        heureFinCombo.setValue("09"); // Valeur par défaut
         heureFinCombo.setPrefWidth(70);
 
         minuteFinCombo = new ComboBox<>();
-        minuteFinCombo.getItems().addAll(0, 15, 30, 45);
-        minuteFinCombo.setValue(horaireFin.getMinutes());
+        minuteFinCombo.getItems().addAll("00", "15", "30", "45");
+        minuteFinCombo.setValue("00"); // Valeur par défaut
         minuteFinCombo.setPrefWidth(70);
-
-        // Initialisation des boutons radio
-        typeReservationGroup = new ToggleGroup();
-
-        presentielRadio = new RadioButton("Présentiel");
-        presentielRadio.setToggleGroup(typeReservationGroup);
-        presentielRadio.setSelected(true);
-
-        distancielRadio = new RadioButton("Distanciel");
-        distancielRadio.setToggleGroup(typeReservationGroup);
 
         // Initialisation des boutons d'action
         annulerButton = new Button("_Annuler");
@@ -153,15 +131,15 @@ public class GridPaneFormulaireReservation extends GridPane {
      */
     private void disposerComposants() {
         // Titre du formulaire
-        add(titreLabel, 0, 0, 2, 1);
+        add(titreFormulaireLabel, 0, 0, 2, 1);
+
+        // Champ Titre (cours)
+        add(coursLabel, 0, 1);
+        add(coursField, 1, 1);
 
         // Champ Date
-        add(dateLabel, 0, 1);
-        add(datePicker, 1, 1);
-
-        // Champ Nom du cours
-        add(coursLabel, 0, 2);
-        add(coursField, 1, 2);
+        add(dateLabel, 0, 2);
+        add(datePicker, 1, 2);
 
         // Champ Horaire
         add(horaireLabel, 0, 3);
@@ -177,20 +155,12 @@ public class GridPaneFormulaireReservation extends GridPane {
 
         add(horaireCompletBox, 1, 3);
 
-        // Champ Type de réservation
-        add(typeReservationLabel, 0, 4);
-
-        HBox typeReservationBox = new HBox(20);
-        typeReservationBox.getChildren().addAll(presentielRadio, distancielRadio);
-
-        add(typeReservationBox, 1, 4);
-
         // Boutons d'action
         HBox buttonsBox = new HBox(15);
         buttonsBox.setAlignment(Pos.CENTER_RIGHT);
         buttonsBox.getChildren().addAll(annulerButton, enregistrerButton);
 
-        add(buttonsBox, 0, 5, 2, 1);
+        add(buttonsBox, 0, 4, 2, 1); // Remonté à la ligne 4
 
         // Espacement supplémentaire en bas du formulaire
         setPadding(new Insets(20, 20, 30, 20));
@@ -210,58 +180,52 @@ public class GridPaneFormulaireReservation extends GridPane {
             }
         });
 
-        // Mise à jour des objets Horaire lors de la sélection des valeurs
-        heureDebutCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                try {
-                    horaireDebut.setHeure(newVal);
-                    validerHoraires();
-                } catch (IllegalArgumentException e) {
-                    // Restaurer l'ancienne valeur en cas d'erreur
-                    heureDebutCombo.setValue(oldVal);
-                }
-            }
-        });
+        // Actions pour les ComboBox d'horaires - uniquement pour la validation visuelle
+        heureDebutCombo.setOnAction(e -> validerHoraires());
+        minuteDebutCombo.setOnAction(e -> validerHoraires());
+        heureFinCombo.setOnAction(e -> validerHoraires());
+        minuteFinCombo.setOnAction(e -> validerHoraires());
+    }
 
-        minuteDebutCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                try {
-                    // Convertir minutes en quarts d'heure (0, 1, 2, 3)
-                    int quartHeure = newVal / 15;
-                    horaireDebut.setQuartHeure(quartHeure);
-                    validerHoraires();
-                } catch (IllegalArgumentException e) {
-                    // Restaurer l'ancienne valeur en cas d'erreur
-                    minuteDebutCombo.setValue(oldVal);
-                }
+    /**
+     * Crée des instances d'Horaire à partir des valeurs des ComboBox
+     * Cette méthode n'est appelée qu'après la validation du formulaire
+     * 
+     * @return un tableau contenant les deux horaires (début et fin), ou null si une
+     *         valeur est manquante ou invalide
+     */
+    private Horaire[] creerHoraires() {
+        try {
+            // Vérifier si toutes les valeurs sont sélectionnées
+            if (heureDebutCombo.getValue() == null || minuteDebutCombo.getValue() == null ||
+                    heureFinCombo.getValue() == null || minuteFinCombo.getValue() == null) {
+                afficherErreur("Veuillez sélectionner une heure de début et de fin complète.");
+                return null; // Retourner null si une valeur est manquante
             }
-        });
 
-        heureFinCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                try {
-                    horaireFin.setHeure(newVal);
-                    validerHoraires();
-                } catch (IllegalArgumentException e) {
-                    // Restaurer l'ancienne valeur en cas d'erreur
-                    heureFinCombo.setValue(oldVal);
-                }
-            }
-        });
+            int heureDebut = Integer.parseInt(heureDebutCombo.getValue());
+            int minuteDebut = Integer.parseInt(minuteDebutCombo.getValue());
+            int heureFin = Integer.parseInt(heureFinCombo.getValue());
+            int minuteFin = Integer.parseInt(minuteFinCombo.getValue());
 
-        minuteFinCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                try {
-                    // Convertir minutes en quarts d'heure (0, 1, 2, 3)
-                    int quartHeure = newVal / 15;
-                    horaireFin.setQuartHeure(quartHeure);
-                    validerHoraires();
-                } catch (IllegalArgumentException e) {
-                    // Restaurer l'ancienne valeur en cas d'erreur
-                    minuteFinCombo.setValue(oldVal);
-                }
+            // Création des objets Horaire uniquement à ce moment
+            Horaire horaireDebut = new Horaire(heureDebut, minuteDebut);
+            Horaire horaireFin = new Horaire(heureFin, minuteFin);
+
+            // Vérification supplémentaire que l'heure de fin est après l'heure de début
+            if (horaireFin.toMinutes() <= horaireDebut.toMinutes()) {
+                afficherErreur("L'heure de fin doit être postérieure à l'heure de début.");
+                return null;
             }
-        });
+
+            return new Horaire[] { horaireDebut, horaireFin };
+        } catch (NumberFormatException e) {
+            afficherErreur("Erreur lors de la lecture des horaires.");
+            return null; // Retourner null en cas d'erreur de parsing
+        } catch (IllegalArgumentException e) {
+            afficherErreur("Erreur dans les horaires saisis: " + e.getMessage());
+            return null; // Retourner null si Horaire lève une exception
+        }
     }
 
     /**
@@ -269,52 +233,63 @@ public class GridPaneFormulaireReservation extends GridPane {
      */
     private void configurerAccessibilite() {
         // Association des labels avec leurs contrôles correspondants
-        dateLabel.setLabelFor(datePicker);
         coursLabel.setLabelFor(coursField);
+        dateLabel.setLabelFor(datePicker);
         horaireLabel.setLabelFor(heureDebutCombo);
-        typeReservationLabel.setLabelFor(presentielRadio);
 
-        // Focus initial sur le champ de date
-        datePicker.requestFocus();
+        // Focus initial sur le champ titre
+        coursField.requestFocus();
 
         // Définition de l'ordre de tabulation
-        datePicker.setFocusTraversable(true);
         coursField.setFocusTraversable(true);
+        datePicker.setFocusTraversable(true);
         heureDebutCombo.setFocusTraversable(true);
         minuteDebutCombo.setFocusTraversable(true);
         heureFinCombo.setFocusTraversable(true);
         minuteFinCombo.setFocusTraversable(true);
-        presentielRadio.setFocusTraversable(true);
-        distancielRadio.setFocusTraversable(true);
         annulerButton.setFocusTraversable(true);
         enregistrerButton.setFocusTraversable(true);
     }
 
     /**
      * Valide que l'heure de fin est supérieure à l'heure de début
+     * Travaille uniquement avec les valeurs des ComboBox, sans créer d'objets
+     * Horaire
      */
     private void validerHoraires() {
-        // Utilisation de la méthode toMinutes() de la classe Horaire
-        int totalMinutesDebut = horaireDebut.toMinutes();
-        int totalMinutesFin = horaireFin.toMinutes();
+        try {
+            // Ne rien faire si une des valeurs n'est pas sélectionnée
+            if (heureDebutCombo.getValue() == null || minuteDebutCombo.getValue() == null ||
+                    heureFinCombo.getValue() == null || minuteFinCombo.getValue() == null) {
+                return;
+            }
 
-        if (totalMinutesFin <= totalMinutesDebut) {
-            // Si l'heure de fin est antérieure ou égale à l'heure de début
-            // On met l'heure de fin à l'heure de début + 1 heure
-            int nouvHeure = horaireDebut.getHeure() + 1;
-            if (nouvHeure > 20)
-                nouvHeure = 20;
+            // On récupère les valeurs sélectionnées
+            int heureDebut = Integer.parseInt(heureDebutCombo.getValue());
+            int minuteDebut = Integer.parseInt(minuteDebutCombo.getValue());
+            int heureFin = Integer.parseInt(heureFinCombo.getValue());
+            int minuteFin = Integer.parseInt(minuteFinCombo.getValue());
 
-            // Mise à jour de l'horaire de fin
-            horaireFin = new Horaire(nouvHeure, horaireDebut.getMinutes());
+            int totalMinutesDebut = heureDebut * 60 + minuteDebut;
+            int totalMinutesFin = heureFin * 60 + minuteFin;
 
-            // Mise à jour des ComboBox pour refléter les changements
-            // Utiliser Platform.runLater pour éviter des problèmes de mise à jour pendant
-            // le traitement des événements
-            javafx.application.Platform.runLater(() -> {
-                heureFinCombo.setValue(horaireFin.getHeure());
-                minuteFinCombo.setValue(horaireFin.getMinutes());
-            });
+            // Si l'heure de fin est avant l'heure de début, on ajuste
+            if (totalMinutesFin <= totalMinutesDebut) {
+                heureFin = heureDebut + 1;
+                if (heureFin > 20)
+                    heureFin = 20;
+
+                // Mise à jour seulement de la ComboBox, pas d'objet Horaire créé
+                // Utiliser Platform.runLater pour éviter les problèmes de mise à jour pendant
+                // l'événement
+                final int finalHeureFin = heureFin;
+                javafx.application.Platform.runLater(() -> {
+                    heureFinCombo.setValue(String.format("%02d", finalHeureFin));
+                    minuteFinCombo.setValue(minuteDebutCombo.getValue());
+                });
+            }
+        } catch (Exception e) {
+            // Ignorer les erreurs de conversion
         }
     }
 
@@ -324,6 +299,13 @@ public class GridPaneFormulaireReservation extends GridPane {
      * @return true si le formulaire est valide, false sinon
      */
     private boolean validerFormulaire() {
+        // Vérifier que le titre est renseigné
+        if (coursField.getText().trim().isEmpty()) {
+            afficherErreur("Veuillez saisir le titre de la réservation.");
+            coursField.requestFocus();
+            return false;
+        }
+
         // Vérifier que la date est renseignée
         if (datePicker.getValue() == null) {
             afficherErreur("Veuillez sélectionner une date.");
@@ -331,14 +313,37 @@ public class GridPaneFormulaireReservation extends GridPane {
             return false;
         }
 
-        // Vérifier que le nom du cours est renseigné
-        if (coursField.getText().trim().isEmpty()) {
-            afficherErreur("Veuillez saisir le nom du cours.");
-            coursField.requestFocus();
+        // Vérifier que tous les horaires sont sélectionnés
+        if (heureDebutCombo.getValue() == null || minuteDebutCombo.getValue() == null ||
+                heureFinCombo.getValue() == null || minuteFinCombo.getValue() == null) {
+            afficherErreur("Veuillez sélectionner une heure de début et de fin complète.");
+            // Mettre le focus sur le premier ComboBox vide
+            if (heureDebutCombo.getValue() == null)
+                heureDebutCombo.requestFocus();
+            else if (minuteDebutCombo.getValue() == null)
+                minuteDebutCombo.requestFocus();
+            else if (heureFinCombo.getValue() == null)
+                heureFinCombo.requestFocus();
+            else
+                minuteFinCombo.requestFocus();
             return false;
         }
 
-        // Vérification des horaires déjà effectuée dans validerHoraires()
+        // Vérification finale des horaires (fin > début)
+        try {
+            int heureDebut = Integer.parseInt(heureDebutCombo.getValue());
+            int minuteDebut = Integer.parseInt(minuteDebutCombo.getValue());
+            int heureFin = Integer.parseInt(heureFinCombo.getValue());
+            int minuteFin = Integer.parseInt(minuteFinCombo.getValue());
+            if ((heureFin * 60 + minuteFin) <= (heureDebut * 60 + minuteDebut)) {
+                afficherErreur("L'heure de fin doit être postérieure à l'heure de début.");
+                heureFinCombo.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            afficherErreur("Erreur dans la sélection des horaires.");
+            return false;
+        }
 
         return true;
     }
@@ -358,43 +363,44 @@ public class GridPaneFormulaireReservation extends GridPane {
      * Réinitialise le formulaire à ses valeurs par défaut
      */
     private void reinitialiserFormulaire() {
-        datePicker.setValue(LocalDate.now());
         coursField.clear();
+        datePicker.setValue(LocalDate.now());
 
-        // Réinitialisation des horaires
-        horaireDebut = new Horaire(8, 0);
-        horaireFin = new Horaire(9, 0);
+        // Réinitialisation des ComboBox avec les valeurs par défaut
+        heureDebutCombo.setValue("08");
+        minuteDebutCombo.setValue("00");
+        heureFinCombo.setValue("09");
+        minuteFinCombo.setValue("00");
 
-        // Mise à jour des ComboBox
-        heureDebutCombo.setValue(horaireDebut.getHeure());
-        minuteDebutCombo.setValue(horaireDebut.getMinutes());
-        heureFinCombo.setValue(horaireFin.getHeure());
-        minuteFinCombo.setValue(horaireFin.getMinutes());
-
-        presentielRadio.setSelected(true);
-
-        datePicker.requestFocus();
+        coursField.requestFocus(); // Focus sur le champ titre après réinitialisation
     }
 
     /**
      * Enregistre la réservation à partir des données du formulaire
      */
     private void enregistrerReservation() {
-        // Récupération des valeurs
+        // Création des objets Horaire uniquement au moment de l'enregistrement
+        Horaire[] horaires = creerHoraires();
+        // Si creerHoraires retourne null, une erreur a déjà été affichée
+        if (horaires == null) {
+            return;
+        }
+        Horaire horaireDebut = horaires[0];
+        Horaire horaireFin = horaires[1];
+
+        // Récupération des autres valeurs
+        String titreReservation = coursField.getText().trim();
         LocalDate date = datePicker.getValue();
-        String nomCours = coursField.getText().trim();
-        String typeReservation = presentielRadio.isSelected() ? "Présentiel" : "Distanciel";
 
         // Formatage de la date pour affichage
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String dateFormatee = date.format(formatter);
 
-        // Construction du message de confirmation en utilisant les objets Horaire
+        // Construction du message de confirmation
         String message = "Réservation enregistrée :\n" +
+                "Titre : " + titreReservation + "\n" +
                 "Date : " + dateFormatee + "\n" +
-                "Cours : " + nomCours + "\n" +
-                "Horaire : " + horaireDebut + " à " + horaireFin + "\n" +
-                "Type : " + typeReservation;
+                "Horaire : " + horaireDebut + " à " + horaireFin;
 
         // Affichage de la confirmation
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -410,19 +416,37 @@ public class GridPaneFormulaireReservation extends GridPane {
     /**
      * Récupère l'horaire de début
      * 
-     * @return L'objet Horaire représentant l'heure de début
+     * @return Un nouvel objet Horaire représentant l'heure de début, ou null si non
+     *         sélectionné
      */
     public Horaire getHoraireDebut() {
-        return horaireDebut;
+        try {
+            if (heureDebutCombo.getValue() == null || minuteDebutCombo.getValue() == null)
+                return null;
+            int heure = Integer.parseInt(heureDebutCombo.getValue());
+            int minute = Integer.parseInt(minuteDebutCombo.getValue());
+            return new Horaire(heure, minute);
+        } catch (Exception e) {
+            return null; // Retourner null en cas d'erreur
+        }
     }
 
     /**
      * Récupère l'horaire de fin
      * 
-     * @return L'objet Horaire représentant l'heure de fin
+     * @return Un nouvel objet Horaire représentant l'heure de fin, ou null si non
+     *         sélectionné
      */
     public Horaire getHoraireFin() {
-        return horaireFin;
+        try {
+            if (heureFinCombo.getValue() == null || minuteFinCombo.getValue() == null)
+                return null;
+            int heure = Integer.parseInt(heureFinCombo.getValue());
+            int minute = Integer.parseInt(minuteFinCombo.getValue());
+            return new Horaire(heure, minute);
+        } catch (Exception e) {
+            return null; // Retourner null en cas d'erreur
+        }
     }
 
     /**
@@ -435,21 +459,11 @@ public class GridPaneFormulaireReservation extends GridPane {
     }
 
     /**
-     * Récupère le nom du cours
+     * Récupère le titre de la réservation
      * 
-     * @return Le nom du cours
+     * @return Le titre saisi
      */
-    public String getNomCours() {
+    public String getTitreReservation() {
         return coursField.getText();
-    }
-
-    /**
-     * Indique si la réservation est en présentiel
-     * 
-     * @return true si la réservation est en présentiel, false si elle est à
-     *         distance
-     */
-    public boolean estPresentiel() {
-        return presentielRadio.isSelected();
     }
 }

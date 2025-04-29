@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 
 public class PremiereApplication extends Application {
 
-    public void start(@SuppressWarnings("exports") Stage stage) {
+    public void start   (@SuppressWarnings("exports") Stage stage) {
         File css = new File("css" + File.separator + "premierStyles.css");
 
         HBoxRoot root = new HBoxRoot();

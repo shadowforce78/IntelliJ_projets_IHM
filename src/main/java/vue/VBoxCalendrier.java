@@ -194,7 +194,4 @@ public class VBoxCalendrier extends VBox {
         showCurrentMonth();
     }
 
-    public static void main(String[] args) {
-        PremiereApplication.main(args);
-    }
 }
