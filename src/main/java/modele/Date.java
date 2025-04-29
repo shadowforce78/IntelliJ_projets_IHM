@@ -34,7 +34,7 @@ public class Date implements Serializable {
 		- 1 <= chJour et chJour <= dernierJourDuMois (chJour, chAnnee)
 	retourne false si 
  */
-public boolean estValide () {
+public boolean isValid () {
 	return chAnnee > 1582 &&
 		chMois >= 1 && chMois <= 12 &&
 		chJour >= 1 && chJour <= Date.dernierJourDuMois (chMois, chAnnee) ;

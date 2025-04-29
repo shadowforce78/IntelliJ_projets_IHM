@@ -36,7 +36,7 @@ public class DateCalendrier extends Date implements JoursSemaine, Mois, Comparab
             jourSemaine -= 1;
         weekOfYear = date.get(Calendar.WEEK_OF_YEAR);
     }
-
+    
     public String toString() {
         return JOURS_SEMAINE[jourSemaine - 1] + " " + chJour + " " + MOIS[chMois - 1];
     }

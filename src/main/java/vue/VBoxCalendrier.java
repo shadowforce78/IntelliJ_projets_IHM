@@ -8,12 +8,12 @@ import modele.DateCalendrier;
 import modele.CalendrierDuMois;
 import java.time.LocalDate;
 
-public class VBoxRoot extends VBox {
+public class VBoxCalendrier extends VBox {
     private int currentMonthIndex;
     private Label monthLabel;
     private StackPane stackPaneMois;
 
-    public VBoxRoot() {
+    public VBoxCalendrier() {
         super(10); // Espacement de 10 entre les éléments
         getStyleClass().add("root-container");
 
