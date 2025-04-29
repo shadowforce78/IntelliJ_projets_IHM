@@ -343,39 +343,48 @@ public class GridPaneFormulaireReservation extends GridPane {
     }
 
     // Getters pour les composants (si nécessaire pour les tests ou autres classes)
+    @SuppressWarnings("exports")
     public TextField getCoursField() {
         return coursField;
     }
 
+    @SuppressWarnings("exports")
     public DatePicker getDatePicker() {
         return datePicker;
     }
 
+    @SuppressWarnings("exports")
     public Button getAnnulerButton() {
         return annulerButton;
     }
 
+    @SuppressWarnings("exports")
     public Button getEnregistrerButton() {
         return enregistrerButton;
     }
 
     // Getters pour accéder aux niveaux depuis l'extérieur
+    @SuppressWarnings("exports")
     public RadioButton getNiveauDebutant() {
         return niveauDebutant;
     }
 
+    @SuppressWarnings("exports")
     public RadioButton getNiveauMoyen() {
         return niveauMoyen;
     }
 
+    @SuppressWarnings("exports")
     public RadioButton getNiveauAvance() {
         return niveauAvance;
     }
 
+    @SuppressWarnings("exports")
     public RadioButton getNiveauExpert() {
         return niveauExpert;
     }
 
+    @SuppressWarnings("exports")
     public ToggleGroup getNiveauGroup() {
         return niveauGroup;
     }
