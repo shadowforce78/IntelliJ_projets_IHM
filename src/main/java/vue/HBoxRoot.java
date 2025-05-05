@@ -1,10 +1,12 @@
 package vue;
 
+import controleur.Controleur;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import modele.Planning;
+import modele.PlanningCollections;
 
 /**
  * Classe principale pour l'interface graphique de l'application
@@ -12,16 +14,11 @@ import modele.Planning;
  */
 public class HBoxRoot extends HBox {
 
-    private VBoxCalendrier calendrier;
-    private GridPaneFormulaireReservation formulaire;
-
-
     // Planning, controleur et vue calendrierPane et reservationPane
     private static Planning planning;
-    private static HBoxRoot instance;
-    private static VBoxCalendrier calendrierPane;
-    private static GridPaneFormulaireReservation reservationPane;
-
+    private static Controleur controller;
+    private static VBoxCalendrier calendrier;
+    private static GridPaneFormulaireReservation formulaire;
 
     /**
      * Constructeur de la classe HBoxRoot
@@ -29,16 +26,15 @@ public class HBoxRoot extends HBox {
     public HBoxRoot() {
         super(20); // Espacement horizontal de 20 pixels entre les éléments
 
+        planning = new Planning(); // Initialisation du planning
+        calendrier = new VBoxCalendrier(); // Initialisation du calendrier
+        formulaire = new GridPaneFormulaireReservation(); // Initialisation du formulaire de réservation
+        controller = new Controleur();
+
         // Configuration du conteneur principal
         setPadding(new Insets(15));
         setAlignment(Pos.CENTER);
         getStyleClass().add("main-container");
-
-        // Création du calendrier
-        calendrier = new VBoxCalendrier();
-
-        // Création du formulaire de réservation
-        formulaire = new GridPaneFormulaireReservation();
 
         // Ajout des composants au conteneur HBox
         getChildren().addAll(calendrier, formulaire);
@@ -57,7 +53,7 @@ public class HBoxRoot extends HBox {
      * 
      * @return L'instance de VBoxCalendrier
      */
-    public VBoxCalendrier getCalendrier() {
+    public static VBoxCalendrier getCalendrier() {
         return calendrier;
     }
 
@@ -66,7 +62,16 @@ public class HBoxRoot extends HBox {
      * 
      * @return L'instance de GridPaneFormulaireReservation
      */
-    public GridPaneFormulaireReservation getFormulaire() {
+    public static GridPaneFormulaireReservation getFormulaire() {
         return formulaire;
     }
+
+    public static Planning getPlanning() {
+        return planning;
+    }
+
+    public static Controleur getControleur() {
+        return controller;
+    }
+
 }

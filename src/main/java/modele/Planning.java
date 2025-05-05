@@ -1,4 +1,5 @@
 package modele;
+
 public class Planning {
     // Tablea d'objets de la classe Reservation
     private Reservation[] reservations;
