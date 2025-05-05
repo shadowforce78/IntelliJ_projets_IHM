@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import modele.Planning;
 
 /**
  * Classe principale pour l'interface graphique de l'application
@@ -13,6 +14,14 @@ public class HBoxRoot extends HBox {
 
     private VBoxCalendrier calendrier;
     private GridPaneFormulaireReservation formulaire;
+
+
+    // Planning, controleur et vue calendrierPane et reservationPane
+    private static Planning planning;
+    private static HBoxRoot instance;
+    private static VBoxCalendrier calendrierPane;
+    private static GridPaneFormulaireReservation reservationPane;
+
 
     /**
      * Constructeur de la classe HBoxRoot
