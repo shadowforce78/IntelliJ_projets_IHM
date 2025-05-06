@@ -155,6 +155,12 @@ public class GridPaneFormulaireReservation extends GridPane {
         enregistrerButton.setMnemonicParsing(true);
         enregistrerButton.getStyleClass().add("bouton-enregistrer");
         enregistrerButton.setDefaultButton(true);
+
+        // Initialisation du bouton pour afficher le planning
+        afficherPlanningButton = new Button("_Planning");
+        afficherPlanningButton.setMnemonicParsing(true);
+        afficherPlanningButton.getStyleClass().add("bouton-planning");
+        afficherPlanningButton.setTooltip(new Tooltip("Afficher les réservations du planning"));
     }
 
     /**
@@ -201,9 +207,9 @@ public class GridPaneFormulaireReservation extends GridPane {
         add(horaireCompletBox, 1, 4);
 
         // Boutons d'action
-        HBox buttonsBox = new HBox(20);
+        HBox buttonsBox = new HBox(15); // Réduit l'espacement à 15px pour accommoder le nouveau bouton
         buttonsBox.setAlignment(Pos.CENTER_RIGHT);
-        buttonsBox.getChildren().addAll(annulerButton, enregistrerButton);
+        buttonsBox.getChildren().addAll(afficherPlanningButton, annulerButton, enregistrerButton);
 
         add(buttonsBox, 0, 5, 2, 1); // Déplacé à la ligne 5
 
@@ -218,6 +224,9 @@ public class GridPaneFormulaireReservation extends GridPane {
         // L'action du bouton enregistrer sera gérée par le contrôleur
         // On ne fait que la validation en temps réel
         annulerButton.setOnAction(e -> annulerSaisie());
+
+        // Configuration du bouton Afficher Planning
+        afficherPlanningButton.setOnAction(e -> afficherPlanning());
 
         // Validation en temps réel
         coursField.textProperty().addListener((obs, oldVal, newVal) -> {
@@ -398,5 +407,37 @@ public class GridPaneFormulaireReservation extends GridPane {
     @SuppressWarnings("exports")
     public ToggleGroup getNiveauGroup() {
         return niveauGroup;
+    }
+
+    /**
+     * Affiche le contenu du planning dans une boîte de dialogue
+     */
+    private void afficherPlanning() {
+        // Récupérer le planning depuis HBoxRoot
+        modele.Planning planning = HBoxRoot.getPlanning();
+        String contenuPlanning = planning.toString();
+
+        // Si le planning est vide, afficher un message spécifique
+        if (contenuPlanning == null || contenuPlanning.trim().isEmpty()) {
+            contenuPlanning = "Aucune réservation dans le planning actuellement.";
+        }
+
+        // Créer une boîte de dialogue pour afficher le planning
+        Alert dialogPlanning = new Alert(Alert.AlertType.INFORMATION);
+        dialogPlanning.setTitle("Planning des Réservations");
+        dialogPlanning.setHeaderText("Liste des réservations enregistrées");
+
+        // Créer une zone de texte scrollable pour afficher le contenu du planning
+        TextArea textArea = new TextArea(contenuPlanning);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setPrefHeight(300);
+        textArea.setPrefWidth(500);
+
+        // Ajouter la zone de texte à la boîte de dialogue
+        dialogPlanning.getDialogPane().setContent(textArea);
+
+        // Afficher la boîte de dialogue
+        dialogPlanning.showAndWait();
     }
 }
