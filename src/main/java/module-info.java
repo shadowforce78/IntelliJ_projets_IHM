@@ -6,4 +6,5 @@ module org.example.intellij_projets_ihm {
 
     exports vue;
     exports modele;
+    exports controleur;
 }

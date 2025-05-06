@@ -26,10 +26,26 @@ public class HBoxRoot extends HBox {
     public HBoxRoot() {
         super(20); // Espacement horizontal de 20 pixels entre les éléments
 
+        System.out.println("DEBUG HBoxRoot - Constructeur: Initialisation de l'application");
+
         planning = new Planning(); // Initialisation du planning
+        System.out.println("DEBUG HBoxRoot - Constructeur: Planning créé");
+
         calendrier = new VBoxCalendrier(); // Initialisation du calendrier
+        System.out.println("DEBUG HBoxRoot - Constructeur: VBoxCalendrier créé");
+
         formulaire = new GridPaneFormulaireReservation(); // Initialisation du formulaire de réservation
+        System.out.println("DEBUG HBoxRoot - Constructeur: GridPaneFormulaireReservation créé");
+
         controller = new Controleur();
+        System.out.println("DEBUG HBoxRoot - Constructeur: Controleur créé");
+
+        // Connecter le contrôleur aux vues
+        calendrier.setControleur(controller);
+        System.out.println("DEBUG HBoxRoot - Constructeur: Contrôleur associé au calendrier");
+
+        formulaire.setControleur(controller);
+        System.out.println("DEBUG HBoxRoot - Constructeur: Contrôleur associé au formulaire");
 
         // Configuration du conteneur principal
         setPadding(new Insets(15));
@@ -46,6 +62,8 @@ public class HBoxRoot extends HBox {
         // Ajustement des largeurs préférées
         calendrier.setPrefWidth(400);
         formulaire.setPrefWidth(350);
+
+        System.out.println("DEBUG HBoxRoot - Constructeur: Interface graphique initialisée");
     }
 
     /**

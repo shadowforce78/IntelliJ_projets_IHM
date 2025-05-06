@@ -3,15 +3,18 @@ package vue;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import modele.DateCalendrier;
 import modele.CalendrierDuMois;
 import java.time.LocalDate;
+import controleur.Controleur;
 
 public class VBoxCalendrier extends VBox {
     private int currentMonthIndex;
     private Label monthLabel;
     private StackPane stackPaneMois;
+    private Controleur controleur;
 
     public VBoxCalendrier() {
         super(10); // Espacement de 10 entre les éléments
@@ -116,9 +119,15 @@ public class VBoxCalendrier extends VBox {
             int row = 0;
 
             for (DateCalendrier date : calendrier.getDates()) {
+                // Revenir à l'utilisation de Label au lieu de ToggleButton
                 Label labelDate = new Label(String.valueOf(date.getJour()));
                 labelDate.getStyleClass().add("label-date");
-                final int dayNumber = date.getJour();
+
+                // Stocker la date dans les propriétés du label
+                labelDate.setUserData(date);
+
+                // Rendre le label cliquable avec un style visuel
+                labelDate.getStyleClass().add("clickable-label");
 
                 if (date.getJour() == jourAujourdhui &&
                         date.getMois() == moisAujourdhui &&
@@ -144,6 +153,59 @@ public class VBoxCalendrier extends VBox {
         showCurrentMonth();
 
         getChildren().add(mainContainer);
+    }
+
+    /**
+     * Définit le contrôleur qui sera à l'écoute des actions sur les labels des
+     * dates
+     * 
+     * @param controleur Le contrôleur à associer aux labels des dates
+     */
+    public void setControleur(Controleur controleur) {
+        this.controleur = controleur;
+
+        // Parcourir tous les mois du calendrier
+        for (javafx.scene.Node monthContainer : stackPaneMois.getChildren()) {
+            if (monthContainer instanceof VBox) {
+                // Parcourir les enfants de la VBox du mois
+                for (javafx.scene.Node node : ((VBox) monthContainer).getChildren()) {
+                    if (node instanceof GridPane) {
+                        GridPane datesGrid = (GridPane) node;
+                        // Parcourir toutes les dates dans la grille
+                        for (javafx.scene.Node dateNode : datesGrid.getChildren()) {
+                            if (dateNode instanceof Label && !((Label) dateNode).getText().equals("")) {
+                                Label dateLabel = (Label) dateNode;
+                                // Rendre le label cliquable et associer le contrôleur
+                                dateLabel.setOnMouseClicked(this::handleDateLabelClick);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Gère le clic sur un label de date
+     * 
+     * @param event L'événement de clic de souris
+     */
+    private void handleDateLabelClick(MouseEvent event) {
+        Label dateLabel = (Label) event.getSource();
+        DateCalendrier dateCalendrier = (DateCalendrier) dateLabel.getUserData();
+
+        System.out.println("DEBUG VBoxCalendrier - handleDateLabelClick: Clic sur la date " +
+                dateCalendrier.getJour() + "/" + dateCalendrier.getMois() + "/" +
+                dateCalendrier.getAnnee());
+        System.out.println("DEBUG VBoxCalendrier - handleDateLabelClick: userData=" + dateLabel.getUserData());
+
+        // Transmettre l'événement au contrôleur
+        if (controleur != null) {
+            System.out.println("DEBUG VBoxCalendrier - handleDateLabelClick: Envoi au contrôleur");
+            controleur.handleDateSelection(dateCalendrier);
+        } else {
+            System.out.println("DEBUG VBoxCalendrier - handleDateLabelClick: ERREUR - contrôleur null");
+        }
     }
 
     private void showNextMonth() {

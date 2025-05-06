@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import modele.Horaire;
+import controleur.Controleur;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -43,6 +44,9 @@ public class GridPaneFormulaireReservation extends GridPane {
 
     private Button annulerButton;
     private Button enregistrerButton;
+    private Button afficherPlanningButton; // Nouveau bouton pour afficher le planning
+
+    private Controleur controleur;
 
     /**
      * Constructeur de la classe GridPaneFormulaireReservation
@@ -211,8 +215,8 @@ public class GridPaneFormulaireReservation extends GridPane {
      * Configure les actions et validations des composants
      */
     private void configurerActions() {
-        // Configuration des validations et actions
-        enregistrerButton.setOnAction(e -> enregistrerReservation());
+        // L'action du bouton enregistrer sera gérée par le contrôleur
+        // On ne fait que la validation en temps réel
         annulerButton.setOnAction(e -> annulerSaisie());
 
         // Validation en temps réel
@@ -249,12 +253,36 @@ public class GridPaneFormulaireReservation extends GridPane {
     }
 
     /**
+     * Définit le contrôleur qui sera à l'écoute des actions sur le bouton
+     * Enregistrer
+     * 
+     * @param controleur Le contrôleur à associer au bouton Enregistrer
+     */
+    public void setControleur(Controleur controleur) {
+        this.controleur = controleur;
+        System.out.println("DEBUG GridPaneFormulaireReservation - setControleur: Contrôleur défini");
+        enregistrerButton.setOnAction(controleur);
+        System.out.println(
+                "DEBUG GridPaneFormulaireReservation - setControleur: Bouton Enregistrer associé au contrôleur");
+    }
+
+    /**
+     * Met à jour la date dans le DatePicker
+     * 
+     * @param date La date à afficher dans le DatePicker
+     */
+    public void setDate(LocalDate date) {
+        System.out.println("DEBUG GridPaneFormulaireReservation - setDate: Mise à jour de la date: " + date);
+        datePicker.setValue(date);
+    }
+
+    /**
      * Valide le formulaire et active/désactive le bouton d'enregistrement en
      * conséquence
      * 
      * @return true si le formulaire est valide, false sinon
      */
-    private boolean validerFormulaire() {
+    public boolean validerFormulaire() {
         boolean estValide = !coursField.getText().trim().isEmpty() && datePicker.getValue() != null
                 && validerHoraires();
 
@@ -291,7 +319,7 @@ public class GridPaneFormulaireReservation extends GridPane {
     /**
      * Annule la saisie et réinitialise le formulaire
      */
-    private void annulerSaisie() {
+    public void annulerSaisie() {
         coursField.clear();
         datePicker.setValue(LocalDate.now());
         heureDebutCombo.setValue("08");
@@ -301,46 +329,8 @@ public class GridPaneFormulaireReservation extends GridPane {
         niveauDebutant.setSelected(true);
     }
 
-    /**
-     * Enregistre la réservation à partir des données du formulaire
-     */
-    private void enregistrerReservation() {
-        if (validerFormulaire()) {
-            String titre = coursField.getText().trim();
-            LocalDate date = datePicker.getValue();
-            String dateFormatee = date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-
-            // Récupération du niveau sélectionné
-            String niveau = "Débutant"; // Par défaut
-            if (niveauMoyen.isSelected()) {
-                niveau = "Moyen";
-            } else if (niveauAvance.isSelected()) {
-                niveau = "Avancé";
-            } else if (niveauExpert.isSelected()) {
-                niveau = "Expert";
-            }
-
-            // Création de l'horaire
-            Horaire horaireDebut = new Horaire(Integer.parseInt(heureDebutCombo.getValue()),
-                    Integer.parseInt(minuteDebutCombo.getValue()));
-            Horaire horaireFin = new Horaire(Integer.parseInt(heureFinCombo.getValue()),
-                    Integer.parseInt(minuteFinCombo.getValue()));
-
-            // Affichage d'un message de confirmation
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Réservation enregistrée");
-            alert.setHeaderText("Réservation créée avec succès !");
-            alert.setContentText(
-                    "Titre: " + titre + "\n" +
-                            "Date: " + dateFormatee + "\n" +
-                            "Niveau: " + niveau + "\n" +
-                            "Horaire: " + horaireDebut + " à " + horaireFin);
-            alert.showAndWait();
-
-            // Réinitialisation du formulaire après enregistrement
-            annulerSaisie();
-        }
-    }
+    // La méthode enregistrerReservation est maintenant gérée par le contrôleur
+    // donc elle est supprimée
 
     // Getters pour les composants (si nécessaire pour les tests ou autres classes)
     @SuppressWarnings("exports")
@@ -361,6 +351,27 @@ public class GridPaneFormulaireReservation extends GridPane {
     @SuppressWarnings("exports")
     public Button getEnregistrerButton() {
         return enregistrerButton;
+    }
+
+    // Ajouter des getters pour les combos d'horaires
+    @SuppressWarnings("exports")
+    public ComboBox<String> getHeureDebutCombo() {
+        return heureDebutCombo;
+    }
+
+    @SuppressWarnings("exports")
+    public ComboBox<String> getMinuteDebutCombo() {
+        return minuteDebutCombo;
+    }
+
+    @SuppressWarnings("exports")
+    public ComboBox<String> getHeureFinCombo() {
+        return heureFinCombo;
+    }
+
+    @SuppressWarnings("exports")
+    public ComboBox<String> getMinuteFinCombo() {
+        return minuteFinCombo;
     }
 
     // Getters pour accéder aux niveaux depuis l'extérieur
