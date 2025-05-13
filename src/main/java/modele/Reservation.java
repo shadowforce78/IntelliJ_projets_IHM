@@ -3,6 +3,7 @@ public class Reservation {
     private PlageHoraire chPlageHoraire;
     private String chTtitre;
     private String chDate;
+    private int niveau;
 
     public Reservation(String parTitre, PlageHoraire parPlageHoraire, String parDate) {
         this.chPlageHoraire = parPlageHoraire;
@@ -20,6 +21,22 @@ public class Reservation {
 
     public String getDate() {
         return chDate;
+    }
+
+    /**
+     * Retourne le niveau de la réservation
+     * @return le niveau
+     */
+    public int getNiveau() {
+        return niveau;
+    }
+
+    /**
+     * Définit le niveau de la réservation
+     * @param niveau le niveau à définir
+     */
+    public void setNiveau(int niveau) {
+        this.niveau = niveau;
     }
 
     public String toString() {

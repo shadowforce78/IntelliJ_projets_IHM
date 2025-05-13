@@ -90,6 +90,39 @@ public class VBoxAffichagePlanning extends VBox {
         titreColumn.setResizable(false);
         titreColumn.setSortable(false);
 
+        // Colonne Niveau
+        TableColumn<Reservation, String> niveauColumn = new TableColumn<>("Niveau");
+        niveauColumn.setMinWidth(100);
+        niveauColumn.setCellValueFactory(cellData -> {
+            // Convertir l'entier niveau en chaîne de caractères
+            int niveauInt = cellData.getValue().getNiveau();
+            String niveauStr;
+            switch (niveauInt) {
+                case 1:
+                    niveauStr = "Débutant";
+                    break;
+                case 2:
+                    niveauStr = "Moyen";
+                    break;
+                case 3:
+                    niveauStr = "Avancé";
+                    break;
+                case 4:
+                    niveauStr = "Expert";
+                    break;
+                default:
+                    niveauStr = "Non défini";
+            }
+            return new SimpleStringProperty(niveauStr);
+        });
+        niveauColumn.setResizable(false);
+        niveauColumn.setSortable(false);
+
+        // Aux alentours des lignes 96-98, le code utilise reservation.getNiveau()
+        // Assurez-vous que cette méthode est utilisée correctement
+        // Si vous initialisez des réservations, pensez à définir leur niveau avec
+        // setNiveau()
+
         // Colonne Horaire
         TableColumn<Reservation, String> horaireColumn = new TableColumn<>("Horaire");
         horaireColumn.setMinWidth(200);
@@ -99,7 +132,7 @@ public class VBoxAffichagePlanning extends VBox {
         horaireColumn.setSortable(false);
 
         // Ajouter les colonnes à la table
-        tableReservations.getColumns().addAll(dateColumn, titreColumn, horaireColumn);
+        tableReservations.getColumns().addAll(dateColumn, titreColumn, niveauColumn, horaireColumn);
 
         // Ajouter les composants à la VBox
         getChildren().addAll(semaineTitreLabel, tableReservations);

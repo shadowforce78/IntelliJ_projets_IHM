@@ -60,11 +60,22 @@ public class Controleur implements EventHandler {
                 try {
                     // Créer la plage horaire
                     System.out.println("DEBUG Controleur - handle: Création de la plage horaire");
-                    PlageHoraire plageHoraire = new PlageHoraire(horaireDebut, horaireFin);
-
-                    // Créer la réservation
+                    PlageHoraire plageHoraire = new PlageHoraire(horaireDebut, horaireFin); // Créer la réservation
                     System.out.println("DEBUG Controleur - handle: Création de la réservation");
                     Reservation reservation = new Reservation(titre, plageHoraire, dateFormatee);
+
+                    // Définir le niveau de la réservation
+                    int niveauInt = 1; // Débutant par défaut
+                    if (niveau.equals("Moyen")) {
+                        niveauInt = 2;
+                    } else if (niveau.equals("Avancé")) {
+                        niveauInt = 3;
+                    } else if (niveau.equals("Expert")) {
+                        niveauInt = 4;
+                    }
+                    reservation.setNiveau(niveauInt);
+                    System.out.println(
+                            "DEBUG Controleur - handle: Niveau défini: " + niveau + " (valeur: " + niveauInt + ")");
 
                     // Ajouter la réservation au planning
                     System.out.println("DEBUG Controleur - handle: Ajout au planning");
