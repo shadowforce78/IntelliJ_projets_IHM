@@ -12,13 +12,12 @@ import modele.PlanningCollections;
  * Classe principale pour l'interface graphique de l'application
  * Elle contient un calendrier à gauche et un formulaire de réservation à droite
  */
-public class HBoxRoot extends HBox {
-
-    // Planning, controleur et vue calendrierPane et reservationPane
+public class HBoxRoot extends HBox { // Planning, controleur et vue calendrierPane et reservationPane
     private static Planning planning;
     private static Controleur controller;
     private static VBoxCalendrier calendrier;
     private static GridPaneFormulaireReservation formulaire;
+    private static VBoxAffichagePlanning planningView;
 
     /**
      * Constructeur de la classe HBoxRoot
@@ -33,9 +32,11 @@ public class HBoxRoot extends HBox {
 
         calendrier = new VBoxCalendrier(); // Initialisation du calendrier
         System.out.println("DEBUG HBoxRoot - Constructeur: VBoxCalendrier créé");
-
         formulaire = new GridPaneFormulaireReservation(); // Initialisation du formulaire de réservation
         System.out.println("DEBUG HBoxRoot - Constructeur: GridPaneFormulaireReservation créé");
+
+        planningView = new VBoxAffichagePlanning(); // Initialisation de la vue planning
+        System.out.println("DEBUG HBoxRoot - Constructeur: VBoxAffichagePlanning créé");
 
         controller = new Controleur();
         System.out.println("DEBUG HBoxRoot - Constructeur: Controleur créé");
@@ -43,25 +44,28 @@ public class HBoxRoot extends HBox {
         // Connecter le contrôleur aux vues
         calendrier.setControleur(controller);
         System.out.println("DEBUG HBoxRoot - Constructeur: Contrôleur associé au calendrier");
-
         formulaire.setControleur(controller);
         System.out.println("DEBUG HBoxRoot - Constructeur: Contrôleur associé au formulaire");
+
+        // Initialiser le planning avec les données actuelles
+        planningView.afficherSemaineCourante(planning);
+        System.out.println("DEBUG HBoxRoot - Constructeur: Planning initialisé avec la semaine courante");
 
         // Configuration du conteneur principal
         setPadding(new Insets(15));
         setAlignment(Pos.CENTER);
-        getStyleClass().add("main-container");
-
-        // Ajout des composants au conteneur HBox
-        getChildren().addAll(calendrier, formulaire);
+        getStyleClass().add("main-container"); // Ajout des composants au conteneur HBox
+        getChildren().addAll(calendrier, formulaire, planningView);
 
         // Configuration des contraintes de redimensionnement
         HBox.setHgrow(calendrier, Priority.ALWAYS);
         HBox.setHgrow(formulaire, Priority.ALWAYS);
+        HBox.setHgrow(planningView, Priority.ALWAYS);
 
         // Ajustement des largeurs préférées
-        calendrier.setPrefWidth(400);
-        formulaire.setPrefWidth(350);
+        calendrier.setPrefWidth(300);
+        formulaire.setPrefWidth(300);
+        planningView.setPrefWidth(400);
 
         System.out.println("DEBUG HBoxRoot - Constructeur: Interface graphique initialisée");
     }
@@ -90,6 +94,15 @@ public class HBoxRoot extends HBox {
 
     public static Controleur getControleur() {
         return controller;
+    }
+
+    /**
+     * Renvoie la vue du planning hebdomadaire
+     * 
+     * @return L'instance de VBoxAffichagePlanning
+     */
+    public static VBoxAffichagePlanning getPlanningView() {
+        return planningView;
     }
 
 }

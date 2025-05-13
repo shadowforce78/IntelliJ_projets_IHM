@@ -410,34 +410,17 @@ public class GridPaneFormulaireReservation extends GridPane {
     }
 
     /**
-     * Affiche le contenu du planning dans une boîte de dialogue
+     * Affiche le planning hebdomadaire
      */
     private void afficherPlanning() {
-        // Récupérer le planning depuis HBoxRoot
+        System.out.println("DEBUG GridPaneFormulaireReservation - afficherPlanning: Bouton Planning cliqué");
+
+        // Récupérer et actualiser le planning
         modele.Planning planning = HBoxRoot.getPlanning();
-        String contenuPlanning = planning.toString();
+        VBoxAffichagePlanning planningView = HBoxRoot.getPlanningView();
 
-        // Si le planning est vide, afficher un message spécifique
-        if (contenuPlanning == null || contenuPlanning.trim().isEmpty()) {
-            contenuPlanning = "Aucune réservation dans le planning actuellement.";
-        }
-
-        // Créer une boîte de dialogue pour afficher le planning
-        Alert dialogPlanning = new Alert(Alert.AlertType.INFORMATION);
-        dialogPlanning.setTitle("Planning des Réservations");
-        dialogPlanning.setHeaderText("Liste des réservations enregistrées");
-
-        // Créer une zone de texte scrollable pour afficher le contenu du planning
-        TextArea textArea = new TextArea(contenuPlanning);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-        textArea.setPrefHeight(300);
-        textArea.setPrefWidth(500);
-
-        // Ajouter la zone de texte à la boîte de dialogue
-        dialogPlanning.getDialogPane().setContent(textArea);
-
-        // Afficher la boîte de dialogue
-        dialogPlanning.showAndWait();
+        // Actualiser l'affichage avec les réservations actuelles
+        planningView.actualiser(planning);
+        System.out.println("DEBUG GridPaneFormulaireReservation - afficherPlanning: Affichage du planning actualisé");
     }
 }

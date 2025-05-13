@@ -81,10 +81,13 @@ public class Controleur implements EventHandler {
                                         "Date: " + dateFormatee + "\n" +
                                         "Niveau: " + niveau + "\n" +
                                         "Horaire: " + horaireDebut + " à " + horaireFin);
-                        alert.showAndWait();
-
-                        // Réinitialiser le formulaire
+                        alert.showAndWait(); // Réinitialiser le formulaire
                         reservationPane.annulerSaisie();
+
+                        // Mettre à jour l'affichage du planning
+                        HBoxRoot.getPlanningView().actualiser(planning);
+                        System.out.println(
+                                "DEBUG Controleur - handle: Planning mis à jour après ajout de la réservation");
                     } else {
                         // Une erreur s'est produite lors de l'ajout
                         System.out.println(
@@ -139,6 +142,11 @@ public class Controleur implements EventHandler {
             // Mettre à jour la date dans le formulaire
             reservationPane.setDate(selectedDate);
             System.out.println("DEBUG Controleur - handleDateSelection: Date mise à jour dans le formulaire");
+
+            // Mettre à jour le planning pour afficher la semaine de la date sélectionnée
+            HBoxRoot.getPlanningView().afficherSemainePourDate(HBoxRoot.getPlanning(), dateCalendrier);
+            System.out.println(
+                    "DEBUG Controleur - handleDateSelection: Planning mis à jour pour la semaine de la date sélectionnée");
         } catch (Exception e) {
             System.out.println(
                     "DEBUG Controleur - handleDateSelection: ERREUR lors de la conversion de date - " + e.getMessage());
